@@ -3,6 +3,7 @@ package com.scooterapp.controller;
 import com.scooterapp.entity.Notification;
 import com.scooterapp.service.NotificationService;
 import java.util.List;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/notifications")
+@PreAuthorize("hasAnyRole('ADMIN','RIDER')")
 public class NotificationController {
     private final NotificationService notificationService;
 

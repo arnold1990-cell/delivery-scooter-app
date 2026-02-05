@@ -1,18 +1,21 @@
 import { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { getStoredToken, hasRole } from '../utils/auth';
 
 interface LayoutProps {
   children: ReactNode;
 }
 
-const navItems = [
-  { label: 'Rider', path: '/' },
-  { label: 'Admin', path: '/admin' },
-  { label: 'Login', path: '/login' }
-];
-
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
+  const token = getStoredToken();
+  const isAdmin = hasRole('ADMIN');
+  const isRider = hasRole('RIDER') || isAdmin;
+  const navItems = [
+    { label: 'Rider', path: '/', isVisible: isRider },
+    { label: 'Admin', path: '/admin', isVisible: isAdmin },
+    { label: 'Login', path: '/login', isVisible: !token }
+  ].filter((item) => item.isVisible);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100">
