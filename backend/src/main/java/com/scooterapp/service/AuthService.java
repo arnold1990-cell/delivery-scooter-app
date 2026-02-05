@@ -25,9 +25,10 @@ public class AuthService {
     }
 
     public AuthResponse login(String email, String password) {
+        String normalizedEmail = email == null ? null : email.trim().toLowerCase();
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password));
-        User user = userRepository.findByEmail(authentication.getName())
+                new UsernamePasswordAuthenticationToken(normalizedEmail, password));
+        User user = userRepository.findByEmail(authentication.getName().toLowerCase())
                 .orElseThrow(() -> new IllegalStateException("User not found"));
         List<String> roles = user.getRoles().stream().map(Enum::name).toList();
         String token = jwtService.generateToken(user.getEmail(), roles);
