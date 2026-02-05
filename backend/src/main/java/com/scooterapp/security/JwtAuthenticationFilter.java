@@ -1,12 +1,16 @@
 package com.scooterapp.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,14 +33,42 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String header = request.getHeader("Authorization");
         if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
             String token = header.substring(7);
-            Claims claims = jwtService.parseToken(token);
-            List<String> roles = claims.get("roles", List.class);
-            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                    claims.getSubject(),
-                    null,
-                    roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role)).collect(Collectors.toSet()));
-            SecurityContextHolder.getContext().setAuthentication(auth);
+            try {
+                Claims claims = jwtService.parseToken(token);
+                List<String> roles = extractRoles(claims);
+                Set<SimpleGrantedAuthority> authorities = roles.stream()
+                        .filter(Objects::nonNull)
+                        .map(String::valueOf)
+                        .map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role)
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toSet());
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                        claims.getSubject(),
+                        null,
+                        authorities);
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            } catch (JwtException ex) {
+                SecurityContextHolder.clearContext();
+            }
         }
         filterChain.doFilter(request, response);
+    }
+
+    private List<String> extractRoles(Claims claims) {
+        Object rolesClaim = claims.get("roles");
+        if (rolesClaim instanceof List<?> roles) {
+            return roles.stream()
+                    .map(String::valueOf)
+                    .map(String::trim)
+                    .filter(role -> !role.isBlank())
+                    .collect(Collectors.toList());
+        }
+        if (rolesClaim instanceof String rolesString) {
+            return List.of(rolesString.split(",")).stream()
+                    .map(String::trim)
+                    .filter(role -> !role.isBlank())
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 }
