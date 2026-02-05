@@ -57,6 +57,8 @@ export default function RegisterPage() {
 
       if (storedRoles.includes('ADMIN')) {
         navigate('/admin/dashboard');
+      } else if (storedRoles.includes('DRIVER')) {
+        navigate('/driver/dashboard');
       } else if (storedRoles.includes('RIDER')) {
         navigate('/rider/dashboard');
       } else {

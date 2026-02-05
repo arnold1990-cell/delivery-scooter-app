@@ -48,6 +48,8 @@ export default function LoginPage() {
 
       if (storedRoles.includes('ADMIN')) {
         navigate('/admin/dashboard');
+      } else if (storedRoles.includes('DRIVER')) {
+        navigate('/driver/dashboard');
       } else if (storedRoles.includes('RIDER')) {
         navigate('/rider/dashboard');
       } else {
