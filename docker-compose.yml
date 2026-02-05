@@ -1,0 +1,36 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: scooter
+      POSTGRES_USER: scooter
+      POSTGRES_PASSWORD: scooter
+    ports:
+      - '5432:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  backend:
+    build:
+      context: ./backend
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/scooter
+      DB_USER: scooter
+      DB_PASSWORD: scooter
+      JWT_SECRET: change-me-in-prod-change-me-in-prod
+    ports:
+      - '8080:8080'
+    depends_on:
+      - db
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      VITE_API_URL: http://localhost:8080
+    ports:
+      - '5173:80'
+    depends_on:
+      - backend
+
+volumes:
+  db_data:

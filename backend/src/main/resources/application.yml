@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/scooter}
+    username: ${DB_USER:scooter}
+    password: ${DB_PASSWORD:scooter}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: 8080
+
+security:
+  jwt:
+    issuer: scooter-app
+    secret: ${JWT_SECRET:change-me-in-prod-change-me-in-prod}
+    expires-in-minutes: 120
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
