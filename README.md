@@ -4,7 +4,7 @@ A full-stack, production-ready starter for a modern scooter fleet platform inspi
 
 ## Tech Stack
 
-**Backend**: Java 17, Spring Boot 3, Spring Security, JWT, JPA (Hibernate), WebSockets (STOMP), OpenAPI/Swagger
+**Backend**: Java 21, Spring Boot 3, Spring Security, JWT, JPA (Hibernate), WebSockets (STOMP), OpenAPI/Swagger
 
 **Database**: PostgreSQL
 
