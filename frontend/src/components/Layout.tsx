@@ -16,7 +16,8 @@ export default function Layout({ children }: LayoutProps) {
     { label: 'Rider', path: '/rider/dashboard', isVisible: isRider },
     { label: 'Admin', path: '/admin/dashboard', isVisible: isAdmin },
     { label: 'Viewer', path: '/viewer/dashboard', isVisible: !!token && !isRider && !isAdmin },
-    { label: 'Login', path: '/login', isVisible: !token }
+    { label: 'Login', path: '/login', isVisible: !token },
+    { label: 'Register', path: '/register', isVisible: !token }
   ].filter((item) => item.isVisible);
 
   const handleLogout = () => {

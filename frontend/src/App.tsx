@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import AdminDashboard from './pages/AdminDashboard';
 import RiderDashboard from './pages/RiderDashboard';
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import Layout from './components/Layout';
 import ProtectedRoute from './routes/ProtectedRoute';
 import ViewerDashboard from './pages/ViewerDashboard';
@@ -46,6 +47,7 @@ export default function App() {
           }
         />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </Layout>
   );
