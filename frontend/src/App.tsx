@@ -1,28 +1,48 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import AdminDashboard from './pages/AdminDashboard';
 import RiderDashboard from './pages/RiderDashboard';
 import LoginPage from './pages/LoginPage';
 import Layout from './components/Layout';
-import RequireRole from './components/RequireRole';
+import ProtectedRoute from './routes/ProtectedRoute';
+import ViewerDashboard from './pages/ViewerDashboard';
+import { getStoredRoles } from './utils/auth';
 
 export default function App() {
+  const roles = getStoredRoles();
+  const defaultRoute = roles.includes('ADMIN')
+    ? '/admin/dashboard'
+    : roles.includes('RIDER')
+      ? '/rider/dashboard'
+      : '/viewer/dashboard';
+
   return (
     <Layout>
       <Routes>
+        <Route path="/" element={<Navigate to={defaultRoute} replace />} />
+        <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+        <Route path="/rider" element={<Navigate to="/rider/dashboard" replace />} />
         <Route
-          path="/"
+          path="/rider/dashboard"
           element={
-            <RequireRole allowedRoles={['RIDER', 'ADMIN']}>
+            <ProtectedRoute allowedRoles={['RIDER', 'ADMIN']}>
               <RiderDashboard />
-            </RequireRole>
+            </ProtectedRoute>
           }
         />
         <Route
-          path="/admin"
+          path="/admin/dashboard"
           element={
-            <RequireRole allowedRoles={['ADMIN']}>
+            <ProtectedRoute allowedRoles={['ADMIN']}>
               <AdminDashboard />
-            </RequireRole>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/viewer/dashboard"
+          element={
+            <ProtectedRoute>
+              <ViewerDashboard />
+            </ProtectedRoute>
           }
         />
         <Route path="/login" element={<LoginPage />} />
