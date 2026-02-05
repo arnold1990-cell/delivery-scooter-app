@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import MapPlaceholder from '../components/MapPlaceholder';
 import StatCard from '../components/StatCard';
 
@@ -8,6 +9,14 @@ const maintenanceQueue = [
 ];
 
 export default function AdminDashboard() {
+  const [queuedItems, setQueuedItems] = useState<string[]>([]);
+
+  const handleQueue = (id: string) => {
+    if (!queuedItems.includes(id)) {
+      setQueuedItems((prev) => [...prev, id]);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-8">
       <section className="grid gap-4 lg:grid-cols-4">
@@ -46,8 +55,16 @@ export default function AdminDashboard() {
               <div key={item.id} className="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
                 <p className="text-sm font-semibold text-white">{item.id}</p>
                 <p className="text-xs text-slate-400">{item.issue}</p>
-                <button className="mt-3 rounded-full border border-brand-500 px-3 py-1 text-xs text-brand-500">
-                  {item.action}
+                <button
+                  className={`mt-3 rounded-full border px-3 py-1 text-xs transition ${
+                    queuedItems.includes(item.id)
+                      ? 'border-emerald-400/60 text-emerald-300'
+                      : 'border-brand-500 text-brand-500 hover:border-brand-600 hover:text-brand-600'
+                  }`}
+                  type="button"
+                  onClick={() => handleQueue(item.id)}
+                >
+                  {queuedItems.includes(item.id) ? 'Queued' : item.action}
                 </button>
               </div>
             ))}
