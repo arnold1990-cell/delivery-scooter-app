@@ -19,7 +19,7 @@ export default function Layout({ children }: LayoutProps) {
       <header className="border-b border-slate-800">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Scooter Cloud</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Scootify</p>
             <h1 className="text-xl font-semibold">Live Fleet Command</h1>
           </div>
           <nav className="flex gap-4 text-sm">
