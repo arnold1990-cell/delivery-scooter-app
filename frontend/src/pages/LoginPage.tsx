@@ -1,6 +1,30 @@
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { getStoredRoles, setAuthStorage } from '../utils/auth';
+
+const normalizeRoles = (roles: unknown): string[] => {
+  if (Array.isArray(roles)) {
+    return roles.map((role) => String(role));
+  }
+  if (typeof roles === 'string') {
+    return roles
+      .split(',')
+      .map((role) => role.trim())
+      .filter(Boolean);
+  }
+  return [];
+};
+
+const getLoginErrorMessage = (error: unknown) => {
+  if (typeof error === 'object' && error !== null && 'response' in error) {
+    const axiosError = error as { response?: { status?: number } };
+    if (axiosError.response?.status === 401) {
+      return 'Invalid email or password.';
+    }
+  }
+  return 'Login failed. Check your credentials or API connection.';
+};
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -16,19 +40,23 @@ export default function LoginPage() {
 
     try {
       const response = await api.post('/api/auth/login', { email, password });
-      const { token, roles } = response.data as { token: string; roles: string[] };
-      localStorage.setItem('token', token);
-      localStorage.setItem('roles', JSON.stringify(roles));
+      const payload = response.data as { token: string; roles?: string[] | string };
+      const roles = normalizeRoles(payload.roles);
 
-      if (roles?.includes('ADMIN')) {
-        navigate('/admin');
+      setAuthStorage(payload.token, roles);
+      const storedRoles = roles.length > 0 ? roles : getStoredRoles();
+
+      if (storedRoles.includes('ADMIN')) {
+        navigate('/admin/dashboard');
+      } else if (storedRoles.includes('RIDER')) {
+        navigate('/rider/dashboard');
       } else {
-        navigate('/');
+        navigate('/viewer/dashboard');
       }
       setStatus('idle');
     } catch (error) {
       setStatus('error');
-      setErrorMessage('Login failed. Check your credentials or API connection.');
+      setErrorMessage(getLoginErrorMessage(error));
     }
   };
 
