@@ -12,11 +12,14 @@ export default function Layout({ children }: LayoutProps) {
   const token = getStoredToken();
   const isAdmin = hasRole('ADMIN');
   const isRider = hasRole('RIDER') || isAdmin;
+  const isDriver = hasRole('DRIVER') || isAdmin;
   const navItems = [
     { label: 'Rider', path: '/rider/dashboard', isVisible: isRider },
+    { label: 'Driver', path: '/driver/dashboard', isVisible: isDriver },
     { label: 'Admin', path: '/admin/dashboard', isVisible: isAdmin },
-    { label: 'Viewer', path: '/viewer/dashboard', isVisible: !!token && !isRider && !isAdmin },
-    { label: 'Login', path: '/login', isVisible: !token }
+    { label: 'Viewer', path: '/viewer/dashboard', isVisible: !!token && !isRider && !isDriver && !isAdmin },
+    { label: 'Login', path: '/login', isVisible: !token },
+    { label: 'Register', path: '/register', isVisible: !token }
   ].filter((item) => item.isVisible);
 
   const handleLogout = () => {

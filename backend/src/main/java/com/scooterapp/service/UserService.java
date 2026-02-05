@@ -27,7 +27,8 @@ public class UserService {
         user.setEmail(request.getEmail().toLowerCase());
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         user.setPhoneNumber(request.getPhoneNumber());
-        user.getRoles().add(Role.RIDER);
+        Role requestedRole = request.getRole() == null ? Role.RIDER : request.getRole();
+        user.getRoles().add(requestedRole);
         return userRepository.save(user);
     }
 

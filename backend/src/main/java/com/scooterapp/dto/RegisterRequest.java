@@ -1,5 +1,6 @@
 package com.scooterapp.dto;
 
+import com.scooterapp.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -15,6 +16,8 @@ public class RegisterRequest {
     private String password;
 
     private String phoneNumber;
+
+    private Role role;
 
     public String getFullName() {
         return fullName;
@@ -46,5 +49,13 @@ public class RegisterRequest {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
