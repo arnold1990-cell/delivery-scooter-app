@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import MapPlaceholder from '../components/MapPlaceholder';
 import StatCard from '../components/StatCard';
 
@@ -8,6 +9,8 @@ const scooters = [
 ];
 
 export default function RiderDashboard() {
+  const [reservedScooterId, setReservedScooterId] = useState<string | null>(null);
+
   return (
     <div className="flex flex-col gap-8">
       <section className="grid gap-4 lg:grid-cols-3">
@@ -35,8 +38,16 @@ export default function RiderDashboard() {
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-slate-200">{scooter.battery}%</p>
-                  <button className="mt-2 rounded-full bg-brand-500 px-3 py-1 text-xs font-semibold text-white">
-                    Reserve
+                  <button
+                    className={`mt-2 rounded-full px-3 py-1 text-xs font-semibold text-white transition ${
+                      reservedScooterId === scooter.id
+                        ? 'bg-emerald-500/80'
+                        : 'bg-brand-500 hover:bg-brand-600'
+                    }`}
+                    type="button"
+                    onClick={() => setReservedScooterId(scooter.id)}
+                  >
+                    {reservedScooterId === scooter.id ? 'Reserved' : 'Reserve'}
                   </button>
                 </div>
               </div>
