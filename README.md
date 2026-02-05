@@ -1,4 +1,4 @@
-# Scooter Management & Ride-Sharing Application
+# Scootify Ride-Sharing Platform
 
 A full-stack, production-ready starter for a modern scooter fleet platform inspired by Bolt, Lime, and Uber Scooters.
 
